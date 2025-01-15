@@ -6,7 +6,7 @@ services:
     container_name: mysql-container        # 컨테이너 이름 (필수, 변경 가능)
     restart: always                       # 컨테이너 재시작 정책 (권장, 변경 가능)
     ports:
-      - "3306:3306"                       # 로컬과 컨테이너 간 포트 매핑 (필수, 필요시 변경 가능)
+      - "3307:3306"                       # 로컬과 컨테이너 간 포트 매핑 (필수, 필요시 변경 가능)
     environment:
       MYSQL_ROOT_PASSWORD: rootpassword   # MySQL 루트 비밀번호 (필수, 임의로 수정 가능)
       MYSQL_DATABASE: redis_prac_db          # 초기 생성할 데이터베이스 이름 (필수, 임의로 수정 가능)
