@@ -14,7 +14,7 @@ spring:
         use_sql_comments: true
 
   datasource:
-    url: jdbc:mysql://localhost:3306/redis_prac_db
+    url: jdbc:mysql://localhost:3307/redis_prac_db
     username: user
     password: password
     driver-class-name: com.mysql.cj.jdbc.Driver
