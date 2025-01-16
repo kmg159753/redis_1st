@@ -22,10 +22,10 @@
 
 4. Domain 모듈
    - 내부 비지니스 핵심 로직 (Entity, Repository)
-  - Repository 인터페이스 정의
+   - Repository 인터페이스 정의
 
 5. infra 모듈
-  - Repository 구현체, 데이터 베이스 관련 설정
+   - Repository 구현체, 데이터 베이스 관련 설정
 
 
 ### 모듈간의 관계 
