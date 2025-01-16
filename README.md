@@ -30,8 +30,6 @@
 
 ### 모듈간의 관계 
 
-Layerd Architecture는 기본적으로  api -> application -> domain -> infra의 의존 관계를 가지지만 
-Entity를 Domain 모듈에 포함시키면서 api -> application -> domain <- infra 의 의존관계를 가지도록 설계하여 
-계층간의 분리와 도메인 계층의 독립성을 유지하려고 함. 
+Layerd Architecture는 기본적으로  api -> application -> domain -> infra의 의존 관계를 가지지만 Entity를 Domain 모듈에 포함시키면서 api -> application -> domain <- infra 의 의존관계를 가지도록 설계하여 계층간의 분리와 도메인 계층의 독립성을 유지하려고 함. 
 
 
