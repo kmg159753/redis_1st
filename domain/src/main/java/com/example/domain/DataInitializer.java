@@ -45,7 +45,7 @@ public class DataInitializer {
 
     private List<Movie> createMovies() {
         List<Movie> movies = new ArrayList<>();
-        for (int i = 1; i <= 20; i++) {
+        for (int i = 1; i <= 500; i++) {
             movies.add(Movie.builder()
                     .title("Movie " + i)
                     .rating(Movie.Rating.values()[random.nextInt(Movie.Rating.values().length)])
@@ -70,7 +70,7 @@ public class DataInitializer {
 
     private List<Screening> createScreenings(List<Movie> movies, List<Theater> theaters) {
         List<Screening> screenings = new ArrayList<>();
-        for (int i = 1; i <= 500; i++) {
+        for (int i = 1; i <= 50000; i++) {
             Movie movie = movies.get(random.nextInt(movies.size()));
             Theater theater = theaters.get(random.nextInt(theaters.size()));
             LocalDateTime startTime = LocalDateTime.now().plusHours(random.nextInt(720)); // 현재부터 최대 30일 후
