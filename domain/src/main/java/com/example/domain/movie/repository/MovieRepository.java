@@ -2,19 +2,11 @@ package com.example.domain.movie.repository;
 
 
 import com.example.domain.movie.entity.Movie;
-import org.springframework.stereotype.Repository;
+import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.stereotype.Component;
 
 import java.util.List;
 
-@Repository
-public interface MovieRepository {
+public interface MovieRepository extends JpaRepository<Movie,Long> {
 
-
-    Movie findById(Long id);
-
-    List<Movie> findAll();
-
-    void save(Movie movie);
-
-    void saveAll(List<Movie> movies);
 }

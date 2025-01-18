@@ -8,7 +8,7 @@ import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 
 @SpringBootApplication
 @ComponentScan(basePackages = "com.example")
-@EnableJpaRepositories(basePackages = "com.example.infra")
+@EnableJpaRepositories(basePackages = "com.example.domain")
 @EntityScan(basePackages = "com.example.domain")
 public class AppApiApplication {
 

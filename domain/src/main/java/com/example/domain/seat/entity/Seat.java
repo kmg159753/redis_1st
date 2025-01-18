@@ -1,8 +1,8 @@
 package com.example.domain.seat.entity;
 
+import com.example.domain.screening.entity.Screening;
 import jakarta.persistence.*;
 import lombok.Getter;
-import com.example.domain.screening.entity.Screening;
 
 @Entity
 @Table(name = "Seat")
