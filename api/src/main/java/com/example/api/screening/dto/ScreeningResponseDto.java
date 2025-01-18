@@ -1,4 +1,4 @@
-package com.example.domain.screening.dto;
+package com.example.api.screening.dto;
 
 
 import lombok.AllArgsConstructor;

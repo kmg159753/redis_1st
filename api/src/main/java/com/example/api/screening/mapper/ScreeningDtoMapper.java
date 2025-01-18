@@ -1,6 +1,6 @@
 package com.example.api.screening.mapper;
 
-import com.example.domain.screening.dto.ScreeningResponseDto;
+import com.example.api.screening.dto.ScreeningResponseDto;
 import com.example.domain.screening.entity.Screening;
 
 import java.util.Comparator;
@@ -49,7 +49,7 @@ public class ScreeningDtoMapper {
                                             .collect(Collectors.toList())
                             ).build();
 
-                }).sorted(Comparator.comparing(ScreeningResponseDto::getReleaseDate).reversed()) // 개봉일 내림차순 정렬
+                }).sorted(Comparator.comparing(ScreeningResponseDto::getReleaseDate).reversed())// 개봉일 내림차순 정렬
                 .collect(Collectors.toList());
     }
 }
