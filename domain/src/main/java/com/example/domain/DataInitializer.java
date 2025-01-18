@@ -7,7 +7,6 @@ import com.example.domain.theater.entity.Theater;
 import com.example.domain.movie.repository.MovieRepository;
 import com.example.domain.screening.repository.ScreeningRepository;
 import com.example.domain.theater.repository.TheaterRepository;
-import jakarta.annotation.PostConstruct;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
