@@ -1,3 +1,0 @@
-### Screening API 테스트
-GET http://localhost:8080/api/screenings
-Content-Type: application/json
