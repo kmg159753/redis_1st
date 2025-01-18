@@ -4,6 +4,7 @@ package com.example.api.exception;
 import com.example.common.util.BusinessException;
 import com.example.common.util.ErrorCode;
 import com.example.common.util.ErrorResponse;
+import jakarta.validation.ConstraintViolationException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -17,6 +18,8 @@ import java.net.BindException;
 import java.nio.file.AccessDeniedException;
 import java.sql.SQLException;
 import java.util.Arrays;
+import java.util.HashMap;
+import java.util.Map;
 
 @Slf4j
 @ControllerAdvice
@@ -108,6 +111,19 @@ public class GlobalExceptionHandler {
         log.error("SQLException", e);
         final ErrorResponse response = ErrorResponse.of(ErrorCode.DATABASE_ERROR); // ErrorCode 정의 확인
         return new ResponseEntity<>(response, HttpStatus.INTERNAL_SERVER_ERROR);
+    }
+
+    @ExceptionHandler(ConstraintViolationException.class)
+    public ResponseEntity<Map<String, String>> handleConstraintViolation(ConstraintViolationException ex) {
+        Map<String, String> errors = new HashMap<>();
+
+        ex.getConstraintViolations().forEach(violation -> {
+            String field = violation.getPropertyPath().toString(); // 잘못된 필드명
+            String message = violation.getMessage(); // 에러 메시지
+            errors.put(field, message);
+        });
+
+        return ResponseEntity.badRequest().body(errors);
     }
 
 }
