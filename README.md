@@ -18,18 +18,20 @@
    - 모든 모듈 의존성 포함 
 
 3. 어플리케이션 모듈
-   - 서비스, Domain 모듈 의존성 연결
+   - 서비스 로직
 
 4. Domain 모듈
-   - 내부 비지니스 핵심 로직 (Entity, Repository)
-   - Repository 인터페이스 정의
+   - 내부 비지니스 핵심 로직 (Entity, Repository,Projection에 필요한 Dto)
 
 5. infra 모듈
-   - Repository 구현체, 데이터 베이스 관련 설정
+   - 외부 시스템과의 연동을 담당한다.
 
 
 ### 모듈간의 관계 
+Layerd Architecture는 기본적으로  api -> application -> domain -> infra의 의존 관계
 
-Layerd Architecture는 기본적으로  api -> application -> domain -> infra의 의존 관계를 가지지만 Entity를 Domain 모듈에 포함시키면서 api -> application -> domain <- infra 의 의존관계를 가지도록 설계하여 계층간의 분리와 도메인 계층의 독립성을 유지하려고 함. 
+
+### 성능 테스트 보고서 
+- https://west-bite-e40.notion.site/17f3ae348c6980ffa6ace55763c86dbc
 
 
