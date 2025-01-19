@@ -32,5 +32,5 @@ Layerd Architecture는 기본적으로  api -> application -> domain -> infra의
 
 
 ### 성능 테스트 보고서 
-- https://west-bite-e40.notion.site/17f3ae348c6980ffa6ace55763c86dbc
+- https://www.notion.so/17f3ae348c6980ffa6ace55763c86dbc?pvs=4
 
