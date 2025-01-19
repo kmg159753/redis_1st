@@ -6,6 +6,7 @@ import com.example.api.screening.mapper.ScreeningDtoMapper;
 import com.example.application.screening.service.ScreeningService;
 import com.example.common.util.dto.DataResponse;
 import com.example.domain.movie.entity.Movie;
+import com.example.domain.screening.dto.ProjectionScreeningResponseDto;
 import com.example.domain.screening.entity.Screening;
 import jakarta.annotation.Nullable;
 import jakarta.validation.constraints.Pattern;
@@ -26,7 +27,7 @@ public class ScreeningController {
     private final ScreeningService screeningService;
 
 
-    @GetMapping("/screenings")
+    @GetMapping("/screenings/search")
     public ResponseEntity<DataResponse<List<ScreeningResponseDto>>> getScreenings(
             @RequestParam(required = false) String title,
             @RequestParam(required = false)
@@ -35,7 +36,7 @@ public class ScreeningController {
                     message = "Genre must be one of the following: ACTION, ROMANCE, HORROR, SF"
             ) String genre) {
 
-        List<Screening> screeningList = screeningService.getScreengings(title, genre);
+        List<ProjectionScreeningResponseDto> screeningList = screeningService.getScreengingsAddSearchingAndFilter(title, genre);
 
         List<ScreeningResponseDto> screeningData = ScreeningDtoMapper.toScreeningResponseDto(screeningList);
 
@@ -43,4 +44,16 @@ public class ScreeningController {
 
         return ResponseEntity.ok(response);
     }
+
+//    @GetMapping("/screenings")
+//    public ResponseEntity<DataResponse<List<ScreeningResponseDto>>> getScreenings() {
+//
+//        List<Screening> screeningList = screeningService.getScreengings();
+//
+//        List<ScreeningResponseDto> screeningData = ScreeningDtoMapper.toScreeningResponseDto(screeningList);
+//
+//        DataResponse<List<ScreeningResponseDto>> response = DataResponse.response(true, screeningData);
+//
+//        return ResponseEntity.ok(response);
+//    } // 테스트를 위한 이전 api
 }

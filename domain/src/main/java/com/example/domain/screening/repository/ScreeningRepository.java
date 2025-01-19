@@ -21,19 +21,6 @@ public interface ScreeningRepository extends JpaRepository<Screening,Long>,Scree
             "ORDER BY s.startTime ASC"
     )
     List<Screening> findScreeningWithDetailsByStartTimeAfter(@Param("now") LocalDateTime now);
-
-//    @Query("SELECT s FROM Screening s " +
-//            "JOIN FETCH s.movie m " +
-//            "JOIN FETCH s.theater t " +
-//            "WHERE s.startTime > :now " +
-//            "AND (:title IS NULL OR m.title = :title) " +
-//            "AND (:genre IS NULL OR m.genre = :genre) " +
-//            "ORDER BY s.startTime ASC")
-//    List<Screening> findScreeningInfoAndSearchingByTitleAndGenre(
-//            @Param("now") LocalDateTime now,
-//            @Param("title") String title,
-//            @Param("genre") Movie.Genre genre);
-
     @Query()
     List<Screening> findScreeningByStartTimeAfter(LocalDateTime now);
 }

@@ -1,7 +1,9 @@
 package com.example.domain.screening.repository;
 
 import com.example.domain.movie.entity.Movie;
+import com.example.domain.screening.dto.ProjectionScreeningResponseDto;
 import com.example.domain.screening.entity.Screening;
+import com.querydsl.core.types.Projections;
 import com.querydsl.core.types.dsl.BooleanExpression;
 
 import com.querydsl.core.types.dsl.Expressions;
@@ -22,23 +24,36 @@ public class ScreeningRepositoryImpl implements ScreeningRepositoryCustom {
     private final JPAQueryFactory jpaQueryFactory;
 
     @Override
-    public List<Screening> findScreeningInfoAndSearchingByTitleAndGenre(LocalDateTime now, String title, Movie.Genre genre) {
+    public List<ProjectionScreeningResponseDto> findScreeningInfoAndSearchingByTitleAndGenre(
+            LocalDateTime now, String title, Movie.Genre genre) {
 
-        List<Screening> screeningList = jpaQueryFactory.selectFrom(screening)
-                .join(screening.movie, movie).fetchJoin()
-                .join(screening.theater, theater).fetchJoin()
+        return jpaQueryFactory
+                .select(Projections.constructor(
+                        ProjectionScreeningResponseDto.class,
+                        movie.title,
+                        movie.thumbnail,
+                        movie.rating,
+                        movie.releaseDate,
+                        movie.runtimeMinutes,
+                        movie.genre,
+                        theater.name,
+                        screening.startTime,
+                        screening.endTime
+                ))
+                .from(screening)
+                .join(screening.movie, movie)
+                .join(screening.theater, theater)
                 .where(
-                        isStartTimeGoeToNOw(now),
+                        isStartTimeGoeToNow(now),
                         titleEq(title),
                         genreEq(genre)
                 )
                 .orderBy(screening.startTime.asc())
                 .fetch();
-
-        return screeningList;
     }
 
-    private BooleanExpression isStartTimeGoeToNOw(LocalDateTime now){
+
+    private BooleanExpression isStartTimeGoeToNow(LocalDateTime now){
         return screening.startTime.goe(now);
     }
 

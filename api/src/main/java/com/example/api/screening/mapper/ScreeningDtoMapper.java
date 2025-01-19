@@ -1,6 +1,7 @@
 package com.example.api.screening.mapper;
 
 import com.example.api.screening.dto.ScreeningResponseDto;
+import com.example.domain.screening.dto.ProjectionScreeningResponseDto;
 import com.example.domain.screening.entity.Screening;
 
 import java.util.Comparator;
@@ -10,46 +11,44 @@ import java.util.stream.Collectors;
 
 public class ScreeningDtoMapper {
 
-    public static List<ScreeningResponseDto> toScreeningResponseDto(List<Screening> screenings){
-        //  영화별 상영정보 그룹화
-        Map<Long, List<Screening>> screeningsGroupedByMovie = screenings.stream()
-                .filter(screening -> screening.getMovie().getReleaseDate().isBefore(screening.getStartTime()))
-                .collect(Collectors.groupingBy(screening -> screening.getMovie().getId()));
+    public static List<ScreeningResponseDto> toScreeningResponseDto(List<ProjectionScreeningResponseDto> projections) {
 
-        return screeningsGroupedByMovie.entrySet().stream()
+        return projections.stream()
+                .collect(Collectors.groupingBy(ProjectionScreeningResponseDto::getTitle))
+                .entrySet()
+                .stream()
                 .map(entry -> {
-                    List<Screening> screeningsAboutMovie = entry.getValue();
-                    Screening firstScreening = screeningsAboutMovie.get(0);
+                    String title = entry.getKey();
+                    List<ProjectionScreeningResponseDto> screenings = entry.getValue();
 
+                    ProjectionScreeningResponseDto first = screenings.get(0);
                     return ScreeningResponseDto.builder()
-                            .title(firstScreening.getMovie().getTitle())
-                            .rating(firstScreening.getMovie().getRating().toString())
-                            .releaseDate(firstScreening.getMovie().getReleaseDate())
-                            .thumbnailUrl(firstScreening.getMovie().getThumbnail())
-                            .runtimeMinutes(firstScreening.getMovie().getRuntimeMinutes())
-                            .genre(firstScreening.getMovie().getGenre().toString())
+                            .title(title)
+                            .thumbnailUrl(first.getThumbnailUrl())
+                            .rating(first.getRating().toString())
+                            .releaseDate(first.getReleaseDate())
+                            .runtimeMinutes(first.getRuntimeMinutes())
+                            .genre(first.getGenre().toString())
                             .theaterSchedules(
-                                    screeningsAboutMovie.stream()
-                                            .collect(Collectors.groupingBy(
-                                                    screening -> screening.getTheater().getName(), // 상영관별 그룹화
-                                                    Collectors.mapping(
-                                                            screening -> new ScreeningResponseDto.TheaterSchedule.Schedule(
-                                                                    screening.getStartTime(),
-                                                                    screening.getEndTime()
-                                                            ),
-                                                            Collectors.toList()
-                                                    )
-                                            ))
-                                            .entrySet().stream()
-                                            .map(entry2 -> ScreeningResponseDto.TheaterSchedule.builder()
-                                                    .theaterName(entry2.getKey()) // 상영관 이름
-                                                    .schedules(entry2.getValue()) // 시간표 리스트
-                                                    .build()
-                                            )
+                                    screenings.stream()
+                                            .collect(Collectors.groupingBy(ProjectionScreeningResponseDto::getTheaterName))
+                                            .entrySet()
+                                            .stream()
+                                            .map(theaterEntry -> ScreeningResponseDto.TheaterSchedule.builder()
+                                                    .theaterName(theaterEntry.getKey())
+                                                    .schedules(theaterEntry.getValue().stream()
+                                                            .map(s -> new ScreeningResponseDto.TheaterSchedule.Schedule(
+                                                                    s.getStartTime(),
+                                                                    s.getEndTime()
+                                                            ))
+                                                            .collect(Collectors.toList()))
+                                                    .build())
                                             .collect(Collectors.toList())
-                            ).build();
-
-                }).sorted(Comparator.comparing(ScreeningResponseDto::getReleaseDate).reversed())// 개봉일 내림차순 정렬
+                            )
+                            .build();
+                })
+                .sorted(Comparator.comparing(ScreeningResponseDto::getReleaseDate).reversed())
                 .collect(Collectors.toList());
     }
+
 }
