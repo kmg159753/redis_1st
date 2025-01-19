@@ -20,3 +20,8 @@ spring:
     driver-class-name: com.mysql.cj.jdbc.Driver
 
 
+  cache:
+    type: redis
+    redis:
+      host: localhost # Redis 컨테이너 호스트
+      port: 6379      # Redis 포트

@@ -19,3 +19,12 @@ services:
     volumes:
       - ./data/mysql:/var/lib/mysql
       - ./ddl.sql:/docker-entrypoint-initdb.d/ddl.sql # DDL 파일 경로
+  redis:
+    image: redis:6.2        # Redis 이미지 (최신 안정 버전 선택)
+    container_name: redis-container
+    restart: always
+    ports:
+      - "6379:6379"         # Redis 기본 포트
+    volumes:
+      - ./data/redis:/data  # Redis 데이터 볼륨
+    command: redis-server --save 60 1 --loglevel warning
