@@ -7,9 +7,7 @@ import com.example.application.screening.service.ScreeningService;
 import com.example.common.util.dto.DataResponse;
 import com.example.domain.movie.entity.Movie;
 import com.example.domain.screening.dto.ProjectionScreeningResponseDto;
-import com.example.domain.screening.entity.Screening;
-import jakarta.annotation.Nullable;
-import jakarta.validation.constraints.Pattern;
+import jakarta.validation.constraints.Size;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -29,14 +27,16 @@ public class ScreeningController {
 
     @GetMapping("/screenings/search")
     public ResponseEntity<DataResponse<List<ScreeningResponseDto>>> getScreenings(
-            @RequestParam(required = false) String title,
-            @RequestParam(required = false)
-            @Pattern(
-                    regexp = "|ACTION|ROMANCE|HORROR|SF",
-                    message = "Genre must be one of the following: ACTION, ROMANCE, HORROR, SF"
-            ) String genre) {
 
-        List<ProjectionScreeningResponseDto> screeningList = screeningService.getScreengingsAddSearchingAndFilter(title, genre);
+
+            @RequestParam(required = false)
+            @Size(max = 100, message = "Title length must not exceed 100 characters")
+            String title,
+            @RequestParam(required = false)
+            Movie.Genre genre) {
+
+
+        List<ProjectionScreeningResponseDto> screeningList = screeningService.getScreengings(title, genre);
 
         List<ScreeningResponseDto> screeningData = ScreeningDtoMapper.toScreeningResponseDto(screeningList);
 

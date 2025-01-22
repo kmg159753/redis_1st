@@ -21,17 +21,10 @@ public class ScreeningService {
 
 
     @Cacheable(value = "screeningCache", key = "#title + ':' + #genre")
-    public List<ProjectionScreeningResponseDto> getScreengingsAddSearchingAndFilter(String title, String genre) {
-
-        Movie.Genre genreEnum = null;
-        if (genre != null && !genre.isBlank()) {
-            genreEnum = Movie.Genre.valueOf(genre.toUpperCase()); // 문자열을 Enum으로 변환
-        }
-
-
+    public List<ProjectionScreeningResponseDto> getScreengings(String title, Movie.Genre genre) {
         LocalDateTime now = LocalDateTime.now();
         // 상영 중인 영화 조회
-        return screeningRepository.findScreeningInfoAndSearchingByTitleAndGenre(now,title,genreEnum);
+        return screeningRepository.findScreeningInfoAndSearchingByTitleAndGenre(now,title,genre);
     }
 
 //    public List<Screening> getScreengings() {
