@@ -38,8 +38,8 @@ public class ScreeningDtoMapper {
                                                     .theaterName(theaterEntry.getKey())
                                                     .schedules(theaterEntry.getValue().stream()
                                                             .map(s -> new ScreeningResponseDto.TheaterSchedule.Schedule(
-                                                                    s.getStartTime(),
-                                                                    s.getEndTime()
+                                                                    s.getStartTime().toLocalTime(),
+                                                                    s.getEndTime().toLocalTime()
                                                             ))
                                                             .collect(Collectors.toList()))
                                                     .build())
