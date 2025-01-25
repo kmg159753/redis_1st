@@ -32,6 +32,10 @@ public class Seat extends BaseEntity {
     @JoinColumn(name = "theater_id", nullable = false)
     private Theater theater;
 
+    public void updateStatus(Status status) {
+        this.status = status;
+    }
+
 
     public enum Status{
         AVAILABLE, RESERVED,OCCUPIED, OUT_OF_ORDER
