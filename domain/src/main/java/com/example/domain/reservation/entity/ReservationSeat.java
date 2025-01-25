@@ -24,6 +24,6 @@ public class ReservationSeat extends BaseEntity {
     private Reservation reservation;
 
     @ManyToOne(fetch = LAZY)
-    @JoinColumn(name = "sear_id", nullable = false)
+    @JoinColumn(name = "seat_id", nullable = false)
     private Seat seat;
 }
