@@ -31,7 +31,7 @@ services:
       "migrate"
     ]
     volumes:
-      - ./db/migration:/flyway/sql
+      - ./api/src/main/resources/db/migration:/flyway/sql
 
   redis:
     image: redis:6.2        # Redis 이미지 (최신 안정 버전 선택)
