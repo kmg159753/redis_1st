@@ -16,12 +16,9 @@ import com.example.domain.screening.repository.ScreeningRepository;
 import com.example.domain.seat.entity.Seat;
 import com.example.domain.seat.repository.SeatRepository;
 import com.example.infra.config.RedisLock;
-import jakarta.persistence.OptimisticLockException;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.ApplicationEventPublisher;
-import org.springframework.retry.annotation.Backoff;
-import org.springframework.retry.annotation.Retryable;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
@@ -44,7 +41,7 @@ public class ReservationService {
     @Transactional
     public ServiceReservationResponseDto reserveMovie(Long memberId, Long screeningId, List<Long> seatIdList) {
         String lockKey = "reservation:" + screeningId + ":" + memberId;
-        long leaseTime = 5000; // 5초 동안 락 유지
+        long leaseTime = 2000; // 2초 동안 락 유지
         long waitTime = 2000;  // 2초 동안 락 대기
 
         return redisLock.executeWithLock(lockKey, leaseTime, waitTime, () -> {
