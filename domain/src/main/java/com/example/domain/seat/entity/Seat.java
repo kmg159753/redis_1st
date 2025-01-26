@@ -1,7 +1,6 @@
 package com.example.domain.seat.entity;
 
 import com.example.domain.BaseEntity;
-import com.example.domain.screening.entity.Screening;
 import com.example.domain.theater.entity.Theater;
 import jakarta.persistence.*;
 import lombok.*;
@@ -31,6 +30,9 @@ public class Seat extends BaseEntity {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "theater_id", nullable = false)
     private Theater theater;
+
+    @Version // Optimistic Lock 버전 필드
+    private Integer version;
 
     public void updateStatus(Status status) {
         this.status = status;

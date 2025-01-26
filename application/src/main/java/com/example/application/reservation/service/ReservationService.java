@@ -15,9 +15,12 @@ import com.example.domain.screening.entity.Screening;
 import com.example.domain.screening.repository.ScreeningRepository;
 import com.example.domain.seat.entity.Seat;
 import com.example.domain.seat.repository.SeatRepository;
+import jakarta.persistence.OptimisticLockException;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.ApplicationEventPublisher;
+import org.springframework.retry.annotation.Backoff;
+import org.springframework.retry.annotation.Retryable;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
@@ -35,6 +38,11 @@ public class ReservationService {
     private final SeatRepository seatRepository;
     private final ApplicationEventPublisher eventPublisher; // 이벤트 발행
 
+    @Retryable(
+            value = { OptimisticLockException.class },
+            maxAttempts = 3,// 3회 재시도
+            backoff = @Backoff(delay = 100) // 재시도간 대기시간
+    )
     @Transactional
     public ServiceReservationResponseDto reserveMovie(Long memberId, Long screeningId, List<Long> seatIdList) {
 //

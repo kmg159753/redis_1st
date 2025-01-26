@@ -12,7 +12,7 @@ import java.util.List;
 
 public interface SeatRepository extends JpaRepository<Seat,Long> {
 
-    @Lock(LockModeType.PESSIMISTIC_WRITE)
+//    @Lock(LockModeType.PESSIMISTIC_WRITE)
     @Query("SELECT s FROM Seat s WHERE s.theater.id = :theaterId AND s.id IN :seatIdList AND s.status = 'AVAILABLE'")
     List<Seat> findAvailableSeats(@Param("theaterId") Long theaterId, @Param("seatIdList") List<Long> seatIdList);
 }
