@@ -26,7 +26,7 @@ public class ReservationController {
     @PostMapping("/reservation")
     public ResponseEntity<DataResponse<ReservationResponseDto>> reserveMovie(@RequestBody @Valid ReservationRequestDto reservationRequestDto) {
 
-        ServiceReservationResponseDto serviceReservationResponseDto = reservationService.reserveMoive(
+        ServiceReservationResponseDto serviceReservationResponseDto = reservationService.reserveMovie(
                 reservationRequestDto.getMemberId(),
                 reservationRequestDto.getScreeningId(),
                 reservationRequestDto.getSeatIdList()

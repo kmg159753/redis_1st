@@ -85,7 +85,7 @@ public class ReservationServiceTest {
         Mockito.when(seatRepository.findAvailableSeats(1L, Arrays.asList(1L, 2L, 3L))).thenReturn(seats);
 
         //when
-        ServiceReservationResponseDto response = reservationService.reserveMoive(1L, 1L, Arrays.asList(1L, 2L, 3L));
+        ServiceReservationResponseDto response = reservationService.reserveMovie(1L, 1L, Arrays.asList(1L, 2L, 3L));
 
         //then
         assertNotNull(response);
@@ -105,7 +105,7 @@ public class ReservationServiceTest {
 
         //when
         BusinessException exception = assertThrows(BusinessException.class,
-                () -> reservationService.reserveMoive(1L, 1L, Arrays.asList(1L, 2L, 3L)));
+                () -> reservationService.reserveMovie(1L, 1L, Arrays.asList(1L, 2L, 3L)));
         assertEquals(ErrorCode.INVALID_INPUT_VALUE, exception.getErrorCode());
     }
 
@@ -123,7 +123,7 @@ public class ReservationServiceTest {
 
         // when & then
         BusinessException exception = assertThrows(BusinessException.class,
-                () -> reservationService.reserveMoive(1L, 1L, List.of(1L, 2L)));
+                () -> reservationService.reserveMovie(1L, 1L, List.of(1L, 2L)));
         assertEquals(ErrorCode.INVALID_INPUT_VALUE, exception.getErrorCode());
     }
 }

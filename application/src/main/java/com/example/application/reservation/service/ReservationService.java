@@ -1,5 +1,6 @@
 package com.example.application.reservation.service;
 
+import com.example.application.message.event.ReservationCompletedEvent;
 import com.example.application.reservation.dto.ServiceReservationResponseDto;
 import com.example.application.reservation.mapper.ApplicationReservationDtoMapper;
 import com.example.common.util.BusinessException;
@@ -16,6 +17,7 @@ import com.example.domain.seat.entity.Seat;
 import com.example.domain.seat.repository.SeatRepository;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
@@ -31,9 +33,16 @@ public class ReservationService {
     private final ReservationRepository reservationRepository;
     private final ReservationSeatRepository reservationSeatRepository;
     private final SeatRepository seatRepository;
+    private final ApplicationEventPublisher eventPublisher; // 이벤트 발행
 
     @Transactional
-    public ServiceReservationResponseDto reserveMoive(Long memberId, Long screeningId, List<Long> seatIdList) {
+    public ServiceReservationResponseDto reserveMovie(Long memberId, Long screeningId, List<Long> seatIdList) {
+//
+//        try {
+//            Thread.sleep(1); // 1ms 대기
+//        } catch (InterruptedException e) {
+//            Thread.currentThread().interrupt();
+//        }
 
         Member member = memberRepository.findById(memberId).orElseThrow(() -> new BusinessException(ErrorCode.INVALID_INPUT_VALUE));
 
@@ -65,6 +74,12 @@ public class ReservationService {
 
             reservationSeatRepository.save(reservationSeat);
         });
+
+        eventPublisher.publishEvent(new ReservationCompletedEvent(
+                reservation.getId(),
+                member.getEmail(),
+                screening.getTheater().getName() + "에서 상영 예정입니다."
+        ));
 
         return ApplicationReservationDtoMapper.toServiceReservationResponseDto(seats, screening);
     }
