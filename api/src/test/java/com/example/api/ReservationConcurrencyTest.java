@@ -109,7 +109,9 @@ public class ReservationConcurrencyTest {
 
         // 5. 테스트용 좌석 생성
         testSeats = seatRepository.saveAll(Arrays.asList(
-                Seat.builder().seatRow("A").seatCol("1").theater(testTheater).status(Seat.Status.AVAILABLE).build()
+                Seat.builder().seatRow("A").seatCol("1").theater(testTheater).status(Seat.Status.AVAILABLE).build(),
+                Seat.builder().seatRow("A").seatCol("2").theater(testTheater).status(Seat.Status.AVAILABLE).build(),
+                Seat.builder().seatRow("A").seatCol("3").theater(testTheater).status(Seat.Status.AVAILABLE).build()
         ));
     }
 

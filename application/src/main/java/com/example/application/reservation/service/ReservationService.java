@@ -15,6 +15,7 @@ import com.example.domain.screening.entity.Screening;
 import com.example.domain.screening.repository.ScreeningRepository;
 import com.example.domain.seat.entity.Seat;
 import com.example.domain.seat.repository.SeatRepository;
+import com.example.infra.config.RedisLock;
 import jakarta.persistence.OptimisticLockException;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
@@ -37,59 +38,57 @@ public class ReservationService {
     private final ReservationSeatRepository reservationSeatRepository;
     private final SeatRepository seatRepository;
     private final ApplicationEventPublisher eventPublisher; // 이벤트 발행
+    private final RedisLock redisLock;
 
-    @Retryable(
-            value = { OptimisticLockException.class },
-            maxAttempts = 3,// 3회 재시도
-            backoff = @Backoff(delay = 100) // 재시도간 대기시간
-    )
+
     @Transactional
     public ServiceReservationResponseDto reserveMovie(Long memberId, Long screeningId, List<Long> seatIdList) {
-//
-//        try {
-//            Thread.sleep(1); // 1ms 대기
-//        } catch (InterruptedException e) {
-//            Thread.currentThread().interrupt();
-//        }
+        String lockKey = "reservation:" + screeningId + ":" + memberId;
+        long leaseTime = 5000; // 5초 동안 락 유지
+        long waitTime = 2000;  // 2초 동안 락 대기
 
-        Member member = memberRepository.findById(memberId).orElseThrow(() -> new BusinessException(ErrorCode.INVALID_INPUT_VALUE));
+        return redisLock.executeWithLock(lockKey, leaseTime, waitTime, () -> {
+            Member member = memberRepository.findById(memberId).orElseThrow(() -> new BusinessException(ErrorCode.INVALID_INPUT_VALUE));
 
-        Screening screening = screeningRepository.findScreeningWithTheather(screeningId).orElseThrow(() -> new BusinessException(ErrorCode.INVALID_INPUT_VALUE));
+            Screening screening = screeningRepository.findScreeningWithTheather(screeningId).orElseThrow(() -> new BusinessException(ErrorCode.INVALID_INPUT_VALUE));
 
-        List<Seat> seats = seatRepository.findAvailableSeats(screening.getTheater().getId(),seatIdList);
+            List<Seat> seats = seatRepository.findAvailableSeats(screening.getTheater().getId(), seatIdList);
 
-        if (seats.size() != seatIdList.size()) {
-            throw new BusinessException(ErrorCode.INVALID_INPUT_VALUE);
-        }
+            if (seats.size() != seatIdList.size()) {
+                throw new BusinessException(ErrorCode.INVALID_INPUT_VALUE);
+            }
 
-        validateSeatsAreConsecutive(seats);// 좌석 연속성 검증
+            validateSeatsAreConsecutive(seats);// 좌석 연속성 검증
 
-        Reservation reservation = Reservation.builder()
-                .member(member)
-                .screening(screening)
-                .reserved_at(LocalDateTime.now())
-                .build();
-
-        reservationRepository.save(reservation);
-
-        seats.forEach(seat -> {
-            seat.updateStatus(Seat.Status.RESERVED);
-
-            ReservationSeat reservationSeat = ReservationSeat.builder()
-                    .reservation(reservation)
-                    .seat(seat)
+            Reservation reservation = Reservation.builder()
+                    .member(member)
+                    .screening(screening)
+                    .reserved_at(LocalDateTime.now())
                     .build();
 
-            reservationSeatRepository.save(reservationSeat);
+            reservationRepository.save(reservation);
+
+            seats.forEach(seat -> {
+                seat.updateStatus(Seat.Status.RESERVED);
+
+                ReservationSeat reservationSeat = ReservationSeat.builder()
+                        .reservation(reservation)
+                        .seat(seat)
+                        .build();
+
+                reservationSeatRepository.save(reservationSeat);
+            });
+
+            eventPublisher.publishEvent(new ReservationCompletedEvent(
+                    reservation.getId(),
+                    member.getEmail(),
+                    screening.getTheater().getName() + "에서 상영 예정입니다."
+            ));
+
+            return ApplicationReservationDtoMapper.toServiceReservationResponseDto(seats, screening);
         });
 
-        eventPublisher.publishEvent(new ReservationCompletedEvent(
-                reservation.getId(),
-                member.getEmail(),
-                screening.getTheater().getName() + "에서 상영 예정입니다."
-        ));
 
-        return ApplicationReservationDtoMapper.toServiceReservationResponseDto(seats, screening);
     }
 
     private void validateSeatsAreConsecutive(List<Seat> seats) {
